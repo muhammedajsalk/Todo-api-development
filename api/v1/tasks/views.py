@@ -11,3 +11,25 @@ def tasks(request):
     serializer = TaskSerializer(instance, many=True)
 
     return Response(serializer.data)
+
+
+@api_view(["POST"])
+def create_task(request):
+    serializer = TaskSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+        response_data = {
+            "status_code" : 6000,
+            "message" : "Success"
+        }
+
+        return Response(response_data)
+    
+    else:
+        response_data = {
+            "status_code" : 6001,
+            "message" : "Validation error",
+            "data" : serializer.errors
+        }
+        return Response(serializer.errors)
